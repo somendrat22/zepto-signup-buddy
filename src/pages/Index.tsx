@@ -15,6 +15,9 @@ const Index = () => {
           <Button variant="ghost" className="text-white hover:bg-white/20">
             Sign In
           </Button>
+          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
+            <Link to="/invite-admin">Invite Admin</Link>
+          </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90">
             <Link to="/signup">Sign Up</Link>
           </Button>
