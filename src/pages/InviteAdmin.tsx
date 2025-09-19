@@ -40,7 +40,7 @@ const InviteAdmin = () => {
       // Call backend API endpoint matching Postman collection structure
       const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
       
-      const response = await fetch(`/api/admin/invite?userId=${userId}`, {
+      const response = await fetch(`http://localhost:8085/admin/invite?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -83,7 +83,7 @@ const CreateWarehouse = () => {
         pinCode: parseInt(formData.location.pinCode)
       };
 
-      const response = await fetch(`/api/warehouse/create?userId=${userId}`, {
+      const response = await fetch(`http://localhost:8085/warehouse/create?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
