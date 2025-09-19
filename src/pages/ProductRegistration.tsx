@@ -13,7 +13,9 @@ const ProductRegistration = () => {
   const [formData, setFormData] = useState({
     productName: "",
     manufacturerName: "",
-    quantity: ""
+    quantity: "",
+    basePrice: "",
+    productImageLink: ""
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,10 +31,11 @@ const ProductRegistration = () => {
     setIsSubmitting(true);
 
     try {
-      // Convert quantity to number for API call
+      // Convert quantity and basePrice to numbers for API call
       const productData = {
         ...formData,
-        quantity: parseInt(formData.quantity)
+        quantity: parseInt(formData.quantity),
+        basePrice: parseInt(formData.basePrice)
       };
 
       // Replace with your actual API endpoint
@@ -54,7 +57,9 @@ const ProductRegistration = () => {
         setFormData({
           productName: "",
           manufacturerName: "",
-          quantity: ""
+          quantity: "",
+          basePrice: "",
+          productImageLink: ""
         });
       } else {
         throw new Error('Failed to register product');
@@ -133,6 +138,32 @@ const ProductRegistration = () => {
                       value={formData.quantity}
                       onChange={handleInputChange}
                       min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="basePrice">Base Price *</Label>
+                    <Input
+                      id="basePrice"
+                      name="basePrice"
+                      type="number"
+                      placeholder="Enter base price"
+                      value={formData.basePrice}
+                      onChange={handleInputChange}
+                      min="0"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="productImageLink">Product Image Link</Label>
+                    <Input
+                      id="productImageLink"
+                      name="productImageLink"
+                      type="url"
+                      placeholder="Enter product image URL"
+                      value={formData.productImageLink}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
