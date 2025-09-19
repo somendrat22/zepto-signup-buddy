@@ -66,12 +66,29 @@ const CreateWarehouse = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/api/warehouses', {
+      // Call backend API endpoint matching Postman collection structure
+      const userId = "d38e5f23-3c88-4b9c-8b2f-2919b1c17df6"; // Replace with actual user ID
+      
+      // Transform data to match backend expectations
+      const warehouseData = {
+        wareHouseEmail: formData.email,
+        wareHouseContactNumber: parseInt(formData.contactNumber),
+        addressLine1: formData.location.addressLine1,
+        addressLine2: formData.location.addressLine2,
+        addressLine3: formData.location.addressLine3,
+        city: formData.location.city,
+        country: formData.location.country,
+        isPrimary: formData.location.isPrimary,
+        state: formData.location.state,
+        pinCode: parseInt(formData.location.pinCode)
+      };
+
+      const response = await fetch(`/api/warehouse/create?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(warehouseData),
       });
 
       if (response.ok) {

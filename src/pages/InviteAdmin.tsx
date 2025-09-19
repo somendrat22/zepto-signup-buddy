@@ -37,16 +37,18 @@ const InviteAdmin = () => {
     setIsLoading(true);
     
     try {
-      // TODO: Replace with your Spring Boot API endpoint
-      const response = await fetch('/api/invite-admin', {
+      // Call backend API endpoint matching Postman collection structure
+      const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
+      
+      const response = await fetch(`/api/admin/invite?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...data,
-          phoneNumber: parseInt(data.phoneNumber),
-          status: 'INACTIVE' // Default status for invited user
+          userName: data.userName,
+          email: data.email,
+          phoneNumber: parseInt(data.phoneNumber)
         }),
       });
 

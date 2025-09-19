@@ -38,8 +38,9 @@ const ProductRegistration = () => {
         basePrice: parseInt(formData.basePrice)
       };
 
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/product', {
+      // Call backend API endpoint
+      const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
+      const response = await fetch(`/api/product/register?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
