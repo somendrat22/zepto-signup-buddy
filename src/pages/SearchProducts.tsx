@@ -1,0 +1,304 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Search, Filter, Package, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+
+const searchSchema = z.object({
+  searchTerm: z.string().trim(),
+  manufacturer: z.string().optional(),
+  minPrice: z.string().optional(),
+  maxPrice: z.string().optional(),
+});
+
+type SearchForm = z.infer<typeof searchSchema>;
+
+interface Product {
+  id: string;
+  productName: string;
+  manufacturerName: string;
+  quantity: number;
+  basePrice: number;
+  productImageLink: string;
+}
+
+const SearchProducts = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm<SearchForm>({
+    resolver: zodResolver(searchSchema),
+    defaultValues: {
+      searchTerm: "",
+      manufacturer: "",
+      minPrice: "",
+      maxPrice: "",
+    },
+  });
+
+  const onSubmit = async (data: SearchForm) => {
+    setLoading(true);
+    setHasSearched(true);
+    
+    try {
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (data.searchTerm) params.append('search', data.searchTerm);
+      if (data.manufacturer) params.append('manufacturer', data.manufacturer);
+      if (data.minPrice) params.append('minPrice', data.minPrice);
+      if (data.maxPrice) params.append('maxPrice', data.maxPrice);
+
+      const response = await fetch(`http://localhost:8085/product/search?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to search products');
+      }
+
+      const result = await response.json();
+      setProducts(result.data || []);
+      
+      toast({
+        title: "Search completed",
+        description: `Found ${result.data?.length || 0} products`,
+      });
+    } catch (error) {
+      console.error('Search error:', error);
+      toast({
+        title: "Search failed",
+        description: "Unable to search products. Please try again.",
+        variant: "destructive",
+      });
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearSearch = () => {
+    form.reset();
+    setProducts([]);
+    setHasSearched(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-white">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center space-x-2">
+            <ShoppingCart className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold text-primary">QuickMart</span>
+          </Link>
+          <Button asChild variant="outline">
+            <Link to="/">Back to Home</Link>
+          </Button>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Search Products</h1>
+            <p className="text-lg text-muted-foreground">Find the products you need quickly and easily</p>
+          </div>
+
+          {/* Search Form */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5" />
+                Search & Filter
+              </CardTitle>
+              <CardDescription>
+                Enter your search criteria to find products
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="searchTerm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Search Term</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Product name, keywords..." 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="manufacturer"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Manufacturer</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Brand or manufacturer name" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="minPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Minimum Price (₹)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="0" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="maxPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Maximum Price (₹)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="10000" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button type="submit" disabled={loading} className="flex-1">
+                      {loading ? "Searching..." : "Search Products"}
+                      <Search className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="outline" onClick={clearSearch}>
+                      Clear
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          {/* Search Results */}
+          {hasSearched && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold">
+                  Search Results ({products.length})
+                </h2>
+                {products.length > 0 && (
+                  <Badge variant="secondary" className="text-sm">
+                    {products.length} product{products.length !== 1 ? 's' : ''} found
+                  </Badge>
+                )}
+              </div>
+
+              {products.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-medium mb-2">No products found</h3>
+                    <p className="text-muted-foreground">
+                      Try adjusting your search criteria or browse all products
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {products.map((product) => (
+                    <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-4">
+                        <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
+                          {product.productImageLink ? (
+                            <img
+                              src={product.productImageLink}
+                              alt={product.productName}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <div className={`w-full h-full flex items-center justify-center ${product.productImageLink ? 'hidden' : ''}`}>
+                            <Package className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                        </div>
+                        <CardTitle className="text-lg">{product.productName}</CardTitle>
+                        <CardDescription>
+                          by {product.manufacturerName}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Price:</span>
+                            <span className="text-lg font-bold text-primary">
+                              ₹{product.basePrice.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Stock:</span>
+                            <Badge variant={product.quantity > 0 ? "default" : "destructive"}>
+                              {product.quantity > 0 ? `${product.quantity} available` : 'Out of stock'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button 
+                          className="w-full" 
+                          disabled={product.quantity === 0}
+                        >
+                          {product.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SearchProducts;
