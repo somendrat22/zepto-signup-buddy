@@ -38,7 +38,7 @@ const InviteWarehouseAdmin = () => {
       // Call backend API endpoint matching Postman collection structure
       const userId = "5901634f-a4f5-4160-ade4-62321bc8c131"; // Replace with actual user ID
       
-      const response = await fetch(`http://localhost:8085/warehouse-admin/invite?userId=${userId}`, {
+      const response = await fetch(`http://localhost:8085/api/v1warehouse-admin/invite?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
