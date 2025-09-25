@@ -117,7 +117,7 @@ const Signup = () => {
           pinCode: parseInt(locationData.pinCode)
         };
 
-        const response = await fetch('http://localhost:8085/consumer/create-account', {
+        const response = await fetch('http://localhost:8085/api/v1/consumer/create-account', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
