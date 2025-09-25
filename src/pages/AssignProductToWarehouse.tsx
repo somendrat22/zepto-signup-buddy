@@ -42,7 +42,7 @@ const AssignProductToWarehouse = () => {
 
       // Call backend API endpoint
       const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
-      const response = await fetch(`http://localhost:8085/warehouse-item/assign?userId=${userId}`, {
+      const response = await fetch(`http://localhost:8085/warehouse/product/assign?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

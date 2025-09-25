@@ -16,7 +16,10 @@ const Index = () => {
             Sign In
           </Button>
           <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/invite-admin">Invite Admin</Link>
+            <Link to="/invite-admin">App Admin</Link>
+          </Button>
+          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
+            <Link to="/invite-warehouse-admin">Warehouse Admin</Link>
           </Button>
           <Button asChild variant="ghost" className="text-white hover:bg-white/20">
             <Link to="/create-warehouse">Create Warehouse</Link>

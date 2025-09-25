@@ -98,16 +98,53 @@ const Signup = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateStep2()) {
-      toast({
-        title: "Account created successfully!",
-        description: "Welcome to our delivery platform. You can now start ordering.",
-      });
-      
-      // Here you would typically send the data to your backend
-      console.log("User Data:", userData);
-      console.log("Location Data:", locationData);
+      try {
+        // Prepare request body matching backend consumer create-account structure
+        const requestBody = {
+          userName: userData.userName,
+          email: userData.email,
+          password: userData.password,
+          phoneNumber: parseInt(userData.phoneNumber),
+          addressLine1: locationData.addressLine1,
+          addressLine2: locationData.addressLine2,
+          addressLine3: locationData.addressLine3,
+          city: locationData.city,
+          country: locationData.country,
+          isPrimary: locationData.isPrimary,
+          state: locationData.state,
+          pinCode: parseInt(locationData.pinCode)
+        };
+
+        const response = await fetch('http://localhost:8085/consumer/create-account', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (response.ok) {
+          toast({
+            title: "Account created successfully!",
+            description: "Welcome to our delivery platform. You can now start ordering.",
+          });
+        } else {
+          const errorData = await response.text();
+          toast({
+            title: "Registration failed",
+            description: `Failed to create account: ${errorData}`,
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Registration failed",
+          description: "Network error occurred. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 

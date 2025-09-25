@@ -10,6 +10,7 @@ import CreateWarehouse from "./pages/CreateWarehouse";
 import ProductRegistration from "./pages/ProductRegistration";
 import AssignProductToWarehouse from "./pages/AssignProductToWarehouse";
 import SearchProducts from "./pages/SearchProducts";
+import InviteWarehouseAdmin from "./pages/InviteWarehouseAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/product-registration" element={<ProductRegistration />} />
           <Route path="/assign-product" element={<AssignProductToWarehouse />} />
           <Route path="/search-products" element={<SearchProducts />} />
+          <Route path="/invite-warehouse-admin" element={<InviteWarehouseAdmin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
