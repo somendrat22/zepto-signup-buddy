@@ -11,27 +11,9 @@ const Index = () => {
           <ShoppingCart className="h-8 w-8 text-white" />
           <span className="text-2xl font-bold text-white">QuickMart</span>
         </div>
-        <div className="space-x-4">
+        <div className="flex flex-wrap gap-2">
           <Button asChild variant="ghost" className="text-white hover:bg-white/20">
             <Link to="/signin">Sign In</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/invite-admin">App Admin</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/invite-warehouse-admin">Warehouse Admin</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/create-warehouse">Create Warehouse</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/product-registration">Register Product</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/assign-product">Assign Product</Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
-            <Link to="/search-products">Search Products</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90">
             <Link to="/signup">Sign Up</Link>
@@ -64,24 +46,84 @@ const Index = () => {
             </Button>
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-3 gap-8 mt-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">
-              <Clock className="h-12 w-12 mx-auto mb-4 text-accent" />
-              <h3 className="text-xl font-semibold mb-2">30-Min Delivery</h3>
-              <p className="opacity-80">Lightning-fast delivery to your doorstep</p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">
-              <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-accent" />
-              <h3 className="text-xl font-semibold mb-2">Fresh Quality</h3>
-              <p className="opacity-80">Hand-picked fresh groceries every time</p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">
-              <Truck className="h-12 w-12 mx-auto mb-4 text-accent" />
-              <h3 className="text-xl font-semibold mb-2">Free Delivery</h3>
-              <p className="opacity-80">No delivery charges on orders above ₹199</p>
+          {/* All Pages Navigation */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold mb-8 text-center">Available Pages</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Authentication</h3>
+                <div className="space-y-2">
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/signin">Sign In</Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/signup">Sign Up</Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/dashboard">Dashboard</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Admin Functions</h3>
+                <div className="space-y-2">
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/invite-admin">Invite App Admin</Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/invite-warehouse-admin">Invite Warehouse Admin</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Warehouse Management</h3>
+                <div className="space-y-2">
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/create-warehouse">Create Warehouse</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Product Management</h3>
+                <div className="space-y-2">
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/product-registration">Register Product</Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/assign-product">Assign Product to Warehouse</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Consumer Features</h3>
+                <div className="space-y-2">
+                  <Button asChild variant="ghost" className="w-full text-white hover:bg-white/20 justify-start">
+                    <Link to="/search-products">Search Products</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Quick Features</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-accent" />
+                    <span className="text-sm">30-Min Delivery</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <ShoppingCart className="h-5 w-5 text-accent" />
+                    <span className="text-sm">Fresh Quality</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-accent" />
+                    <span className="text-sm">Free Delivery</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
