@@ -4,13 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, UserType } from "@/contexts/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +36,28 @@ const SignIn = () => {
       if (response.ok) {
         const result = await response.json();
         
-        // Store the token (you might want to use localStorage or a state manager)
-        localStorage.setItem('authToken', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
+        // Store user data using AuthContext
+        login(result.token, result.user);
         
         toast({
           title: "Success",
           description: `Welcome back, ${result.user.userName}!`,
         });
         
-        // Redirect to dashboard or home page
-        window.location.href = '/';
+        // Redirect based on user type
+        const userType = result.user.userType as UserType;
+        switch (userType) {
+          case UserType.CONSUMER:
+            navigate('/search-products');
+            break;
+          case UserType.ZEPTO_APP_ADMIN:
+          case UserType.MAINT:
+            navigate('/dashboard');
+            break;
+          default:
+            navigate('/dashboard');
+            break;
+        }
         
       } else {
         const errorData = await response.json();
