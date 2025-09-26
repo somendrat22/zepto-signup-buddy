@@ -12,8 +12,8 @@ const Index = () => {
           <span className="text-2xl font-bold text-white">QuickMart</span>
         </div>
         <div className="space-x-4">
-          <Button variant="ghost" className="text-white hover:bg-white/20">
-            Sign In
+          <Button asChild variant="ghost" className="text-white hover:bg-white/20">
+            <Link to="/signin">Sign In</Link>
           </Button>
           <Button asChild variant="ghost" className="text-white hover:bg-white/20">
             <Link to="/invite-admin">App Admin</Link>
