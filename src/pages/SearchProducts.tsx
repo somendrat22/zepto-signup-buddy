@@ -14,9 +14,6 @@ import { Link } from "react-router-dom";
 
 const searchSchema = z.object({
   searchTerm: z.string().trim(),
-  manufacturer: z.string().optional(),
-  minPrice: z.string().optional(),
-  maxPrice: z.string().optional(),
 });
 
 type SearchForm = z.infer<typeof searchSchema>;
@@ -40,9 +37,6 @@ const SearchProducts = () => {
     resolver: zodResolver(searchSchema),
     defaultValues: {
       searchTerm: "",
-      manufacturer: "",
-      minPrice: "",
-      maxPrice: "",
     },
   });
 
@@ -54,9 +48,6 @@ const SearchProducts = () => {
       // Build query parameters
       const params = new URLSearchParams();
       if (data.searchTerm) params.append('search', data.searchTerm);
-      if (data.manufacturer) params.append('manufacturer', data.manufacturer);
-      if (data.minPrice) params.append('minPrice', data.minPrice);
-      if (data.maxPrice) params.append('maxPrice', data.maxPrice);
 
       const response = await fetch(`http://localhost:8085/product/search?${params.toString()}`);
       
@@ -117,88 +108,31 @@ const SearchProducts = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                Search & Filter
+                Search Products
               </CardTitle>
               <CardDescription>
-                Enter your search criteria to find products
+                Enter keywords to search for products
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="searchTerm"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Search Term</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Product name, keywords..." 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="manufacturer"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Manufacturer</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Brand or manufacturer name" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="minPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Minimum Price (₹)</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              placeholder="0" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="maxPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Maximum Price (₹)</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              placeholder="10000" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="searchTerm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Search Products</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter product name or keywords..." 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <div className="flex gap-4">
                     <Button type="submit" disabled={loading} className="flex-1">
