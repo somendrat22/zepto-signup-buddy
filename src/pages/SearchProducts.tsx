@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Search, Filter, Package, ShoppingCart } from "lucide-react";
+import { Search, Package, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const searchSchema = z.object({
   searchTerm: z.string().trim(),
@@ -19,12 +19,15 @@ const searchSchema = z.object({
 type SearchForm = z.infer<typeof searchSchema>;
 
 interface Product {
-  id: string;
   productName: string;
   manufacturerName: string;
-  quantity: number;
-  basePrice: number;
   productImageLink: string;
+  wid: string;
+  pid: string;
+  isAvailable: boolean;
+  basePrice: number;
+  discount: number;
+  totalQuantity: number;
 }
 
 const SearchProducts = () => {
@@ -32,6 +35,7 @@ const SearchProducts = () => {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const form = useForm<SearchForm>({
     resolver: zodResolver(searchSchema),
@@ -45,22 +49,40 @@ const SearchProducts = () => {
     setHasSearched(true);
     
     try {
+      // Get userId and token from localStorage
+      const userId = user?.id || localStorage.getItem('userId');
+      const token = localStorage.getItem('authToken');
+
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+
+      if (!token) {
+        throw new Error('Authorization token not found');
+      }
+
       // Build query parameters
       const params = new URLSearchParams();
-      if (data.searchTerm) params.append('search', data.searchTerm);
+      if (data.searchTerm) params.append('name', data.searchTerm);
+      params.append('userId', userId);
 
-      const response = await fetch(`http://localhost:8085/product/search?${params.toString()}`);
+      const response = await fetch(`http://localhost:8085/api/v1/product/search?${params.toString()}`, {
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json',
+        },
+      });
       
       if (!response.ok) {
         throw new Error('Failed to search products');
       }
 
       const result = await response.json();
-      setProducts(result.data || []);
+      setProducts(result || []);
       
       toast({
         title: "Search completed",
-        description: `Found ${result.data?.length || 0} products`,
+        description: `Found ${result?.length || 0} products`,
       });
     } catch (error) {
       console.error('Search error:', error);
@@ -174,8 +196,8 @@ const SearchProducts = () => {
                 </Card>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {products.map((product) => (
-                    <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                  {products.map((product, index) => (
+                    <Card key={product.pid || index} className="hover:shadow-lg transition-shadow">
                       <CardHeader className="pb-4">
                         <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
                           {product.productImageLink ? (
@@ -203,14 +225,26 @@ const SearchProducts = () => {
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium">Price:</span>
-                            <span className="text-lg font-bold text-primary">
-                              ₹{product.basePrice.toLocaleString()}
-                            </span>
+                            <div className="flex flex-col items-end">
+                              <span className="text-lg font-bold text-primary">
+                                ₹{(product.basePrice * (1 - product.discount / 100)).toLocaleString()}
+                              </span>
+                              {product.discount > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{product.basePrice.toLocaleString()}
+                                  </span>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {product.discount}% OFF
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium">Stock:</span>
-                            <Badge variant={product.quantity > 0 ? "default" : "destructive"}>
-                              {product.quantity > 0 ? `${product.quantity} available` : 'Out of stock'}
+                            <Badge variant={product.isAvailable && product.totalQuantity > 0 ? "default" : "destructive"}>
+                              {product.isAvailable && product.totalQuantity > 0 ? `${product.totalQuantity} available` : 'Out of stock'}
                             </Badge>
                           </div>
                         </div>
@@ -218,9 +252,9 @@ const SearchProducts = () => {
                       <CardFooter>
                         <Button 
                           className="w-full" 
-                          disabled={product.quantity === 0}
+                          disabled={!product.isAvailable || product.totalQuantity === 0}
                         >
-                          {product.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                          {product.isAvailable && product.totalQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
                         </Button>
                       </CardFooter>
                     </Card>
