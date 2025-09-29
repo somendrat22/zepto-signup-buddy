@@ -61,16 +61,16 @@ const SearchProducts = () => {
         throw new Error('Authorization token not found');
       }
 
-      // Build query parameters
-      const params = new URLSearchParams();
-      if (data.searchTerm) params.append('name', data.searchTerm);
-      params.append('userId', userId);
-
-      const response = await fetch(`http://localhost:8085/api/v1/product/search?${params.toString()}`, {
+      const response = await fetch('http://localhost:8085/api/v1/product/search', {
+        method: 'POST',
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          name: data.searchTerm,
+          userId: userId
+        }),
       });
       
       if (!response.ok) {
