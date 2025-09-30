@@ -243,8 +243,8 @@ const SearchProducts = () => {
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium">Stock:</span>
-                            <Badge variant={product.isAvailable && product.totalQuantity > 0 ? "default" : "destructive"}>
-                              {product.isAvailable && product.totalQuantity > 0 ? `${product.totalQuantity} available` : 'Out of stock'}
+                            <Badge variant={product.totalQuantity > 0 ? "default" : "destructive"}>
+                              {product.totalQuantity > 0 ? `${product.totalQuantity} available` : 'Out of stock'}
                             </Badge>
                           </div>
                         </div>
@@ -252,9 +252,9 @@ const SearchProducts = () => {
                       <CardFooter>
                         <Button 
                           className="w-full" 
-                          disabled={!product.isAvailable || product.totalQuantity === 0}
+                          disabled={product.totalQuantity === 0}
                         >
-                          {product.isAvailable && product.totalQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                          {product.totalQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
                         </Button>
                       </CardFooter>
                     </Card>
