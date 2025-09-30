@@ -24,7 +24,7 @@ interface Product {
   productImageLink: string;
   wid: string;
   pid: string;
-  isAvailable: boolean;
+  available: boolean;
   basePrice: number;
   discount: number;
   totalQuantity: number;
@@ -82,7 +82,7 @@ const SearchProducts = () => {
       result?.forEach((product: Product, index: number) => {
         console.log(`Product ${index}:`, {
           name: product.productName,
-          isAvailable: product.isAvailable,
+          available: product.available,
           totalQuantity: product.totalQuantity,
           shouldShowInStock: product.totalQuantity > 0
         });
@@ -252,8 +252,8 @@ const SearchProducts = () => {
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium">Stock:</span>
-                            <Badge variant={product.totalQuantity > 0 ? "default" : "destructive"}>
-                              {product.totalQuantity > 0 ? `${product.totalQuantity} available` : 'Out of stock'}
+                            <Badge variant={product.totalQuantity > 0 && product.available ? "default" : "destructive"}>
+                             { product.totalQuantity > 0 && product.available ? `${product.totalQuantity} available` : 'Out of stock'}
                             </Badge>
                           </div>
                         </div>
@@ -263,7 +263,7 @@ const SearchProducts = () => {
                           className="w-full" 
                           disabled={product.totalQuantity === 0}
                         >
-                          {product.totalQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+                          {product.totalQuantity > 0 && product.available ? 'Add to Cart' : 'Out of Stock'}
                         </Button>
                       </CardFooter>
                     </Card>
