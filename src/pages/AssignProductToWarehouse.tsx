@@ -31,6 +31,17 @@ const AssignProductToWarehouse = () => {
     setIsSubmitting(true);
 
     try {
+      // Get userId and token from localStorage
+      const userStr = localStorage.getItem('user');
+      const token = localStorage.getItem('authToken');
+      
+      if (!userStr || !token) {
+        throw new Error('User not authenticated');
+      }
+      
+      const user = JSON.parse(userStr);
+      const userId = user.id;
+      
       // Prepare request body matching backend WareHouseItem structure
       const requestBody = {
         wid: formData.warehouseId,
@@ -40,12 +51,11 @@ const AssignProductToWarehouse = () => {
         totalQuantity: parseInt(formData.totalQuantity)
       };
 
-      // Call backend API endpoint
-      const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
       const response = await fetch(`http://localhost:8085/api/v1/warehouse/product/assign?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token,
         },
         body: JSON.stringify(requestBody),
       });

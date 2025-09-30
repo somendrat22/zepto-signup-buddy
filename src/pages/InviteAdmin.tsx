@@ -37,13 +37,22 @@ const InviteAdmin = () => {
     setIsLoading(true);
     
     try {
-      // Call backend API endpoint matching Postman collection structure
-      const userId = "550e8400-e29b-41d4-a716-446655440000"; // Replace with actual user ID
+      // Get userId and token from localStorage
+      const userStr = localStorage.getItem('user');
+      const token = localStorage.getItem('authToken');
+      
+      if (!userStr || !token) {
+        throw new Error('User not authenticated');
+      }
+      
+      const user = JSON.parse(userStr);
+      const userId = user.id;
       
       const response = await fetch(`http://localhost:8085/api/v1/admin/invite?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token,
         },
         body: JSON.stringify({
           userName: data.userName,

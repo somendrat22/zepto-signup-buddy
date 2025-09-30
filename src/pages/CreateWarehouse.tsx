@@ -66,8 +66,16 @@ const CreateWarehouse = () => {
     setIsLoading(true);
 
     try {
-      // Call backend API endpoint matching Postman collection structure
-      const userId = "d38e5f23-3c88-4b9c-8b2f-2919b1c17df6"; // Replace with actual user ID
+      // Get userId and token from localStorage
+      const userStr = localStorage.getItem('user');
+      const token = localStorage.getItem('authToken');
+      
+      if (!userStr || !token) {
+        throw new Error('User not authenticated');
+      }
+      
+      const user = JSON.parse(userStr);
+      const userId = user.id;
       
       // Transform data to match backend expectations
       const warehouseData = {
@@ -87,6 +95,7 @@ const CreateWarehouse = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token,
         },
         body: JSON.stringify(warehouseData),
       });
