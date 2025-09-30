@@ -78,6 +78,15 @@ const SearchProducts = () => {
       }
 
       const result = await response.json();
+      console.log('Search results:', result);
+      result?.forEach((product: Product, index: number) => {
+        console.log(`Product ${index}:`, {
+          name: product.productName,
+          isAvailable: product.isAvailable,
+          totalQuantity: product.totalQuantity,
+          shouldShowInStock: product.totalQuantity > 0
+        });
+      });
       setProducts(result || []);
       
       toast({
